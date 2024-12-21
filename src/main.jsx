@@ -10,6 +10,11 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ErrorPage from "./pages/ErrorPage";
 
+import PrivateRoute from "./PrivateRoute/PrivateRoute";
+import AddCar from "./pages/addCar";
+
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +31,12 @@ const router = createBrowserRouter([
       {
         path:'/register',
         element:<Register></Register>
+      },
+      {
+        path:'/add-car',
+        element:<PrivateRoute>
+          <AddCar></AddCar>
+        </PrivateRoute>
       }
     ]
   },
