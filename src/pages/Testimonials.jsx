@@ -34,7 +34,7 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <div className="py-12 bg-gray-100">
+    <div className="py-12 bg-gray-100 rounded-xl">
       <div className="container mx-auto px-6">
         <h2 className="text-3xl font-bold text-center mb-8">User Testimonials</h2>
         <div className="relative w-full">
@@ -61,8 +61,8 @@ const Testimonials = () => {
           </button>
 
           
-          <div className="overflow-hidden rounded-xl shadow-xl">
-            <div className="transition-opacity duration-1000 ease-in-out opacity-100">
+          <div className="overflow-hidden rounded-xl shadow-xl ">
+            <div className="transition-opacity duration-1000 ease-in-out opacity-100 mb-5">
               <div className="flex justify-center items-center space-x-8">
                 <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
                   <img
