@@ -13,6 +13,7 @@ import AddCarPage from "./pages/AddCarPage";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import MyCar from "./pages/MyCar";
 import AvailableCars from "./pages/AvailableCars";
+import CarDetails from "./pages/CarDetails";
 
 
 const router = createBrowserRouter([
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path:'/available-car',
         element:<AvailableCars></AvailableCars>
+      },
+      {
+        path:"/car-details/:id",
+        element:<CarDetails></CarDetails>
       }
     ]
   },

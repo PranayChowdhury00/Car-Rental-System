@@ -5,19 +5,22 @@ import { useNavigate } from "react-router-dom";
 const AvailableCars = () => {
   const [cars, setCars] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [viewMode, setViewMode] = useState("grid"); 
-  const [sortBy, setSortBy] = useState("newest"); 
+  const [viewMode, setViewMode] = useState("grid");
+  const [sortBy, setSortBy] = useState("newest");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // New error state
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCars = async () => {
       try {
         setLoading(true);
+        setError(null); // Reset error on retry
         const response = await axios.get("http://localhost:5000/cars");
         setCars(response.data);
       } catch (error) {
         console.error("Error fetching cars:", error);
+        setError("Failed to load cars. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -25,26 +28,24 @@ const AvailableCars = () => {
     fetchCars();
   }, []);
 
-  
   const filteredCars = cars.filter(
     (car) =>
       car.carModel.toLowerCase().includes(searchTerm.toLowerCase()) ||
       car.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  
   const sortedCars = filteredCars.sort((a, b) => {
     if (sortBy === "newest") {
-      return new Date(b.dateAdded) - new Date(a.dateAdded); 
+      return new Date(b.dateAdded) - new Date(a.dateAdded);
     }
     if (sortBy === "oldest") {
-      return new Date(a.dateAdded) - new Date(b.dateAdded); 
+      return new Date(a.dateAdded) - new Date(b.dateAdded);
     }
     if (sortBy === "priceLow") {
-      return a.dailyRentalPrice - b.dailyRentalPrice; 
+      return a.dailyRentalPrice - b.dailyRentalPrice;
     }
     if (sortBy === "priceHigh") {
-      return b.dailyRentalPrice - a.dailyRentalPrice; 
+      return b.dailyRentalPrice - a.dailyRentalPrice;
     }
     return 0;
   });
@@ -62,10 +63,10 @@ const AvailableCars = () => {
   };
 
   return (
-    <div className="container mx-auto p-5">
+    <div className="container mx-auto p-5 ">
       <h1 className="text-3xl font-bold text-center">Available Cars</h1>
 
-      <div className="mt-4 flex justify-between items-center">
+      <div className="mt-4 py-5 flex justify-between items-center ">
         <input
           type="text"
           className="input input-bordered"
@@ -92,23 +93,35 @@ const AvailableCars = () => {
 
       {loading ? (
         <p>Loading...</p>
+      ) : error ? (
+        <div className="mt-6 text-center">
+          <p className="text-red-500">{error}</p>
+        </div>
       ) : sortedCars.length === 0 ? (
         <div className="mt-6 text-center">
           <p>No available cars found.</p>
         </div>
       ) : (
-        <div className={viewMode === "grid" ? "grid grid-cols-3 gap-6" : "space-y-6"}>
+        <div
+          className={viewMode === "grid" ? "grid grid-cols-3 gap-6" : "space-y-6"}
+        >
           {sortedCars.map((car) => (
             <div
               key={car._id}
-              className={viewMode === "grid" ? "card" : "card list-view"}
+              className={viewMode === "grid" ? "card card-compact bg-base-100 shadow-md" : "card card-compact bg-base-100 shadow-md list-view"}
             >
-              <img src={car.imageUrl} alt={car.carModel} className="w-full h-40 object-cover" />
+              <figure>
+                <img
+                  src={car.imageUrl}
+                  alt={car.carModel}
+                  className="w-full h-48 object-cover"
+                />
+              </figure>
               <div className="card-body">
                 <h3 className="text-xl font-semibold">{car.carModel}</h3>
                 <p>{car.location}</p>
                 <p className="text-lg font-bold">{car.dailyRentalPrice} BDT</p>
-                <div className="flex justify-between items-center">
+                <div className="card-actions justify-end">
                   <button
                     onClick={() => navigate(`/car-details/${car._id}`)}
                     className="btn btn-primary"
