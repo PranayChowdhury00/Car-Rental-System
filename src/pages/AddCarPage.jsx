@@ -159,7 +159,7 @@ const AddCarPage = () => {
               <label className="label">
                 <span className="label-text">Images</span>
               </label>
-              <input type="url" name="imgUrl"  />
+              <input className="border-2 rounded-md py-2 px-2" type="url" name="imgUrl" placeholder="imgUrl" />
               
             </div>
             <div className="form-control mt-6">

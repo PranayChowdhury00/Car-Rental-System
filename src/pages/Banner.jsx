@@ -10,7 +10,7 @@ const Banner = () => {
       <div className="absolute inset-0 bg-black opacity-50 rounded-xl"></div> 
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4 space-y-4">
         <h1 className="text-4xl sm:text-5xl font-bold text-shadow-lg">Drive Your Dreams Today!</h1>
-        <a href="/available-cars" className="btn btn-primary text-xl">View Available Cars</a>
+        <a href="/available-car" className="btn btn-primary text-xl">View Available Cars</a>
       </div>
     </section>
   );

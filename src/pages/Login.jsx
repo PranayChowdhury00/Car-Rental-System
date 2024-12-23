@@ -39,6 +39,7 @@ const Login = () => {
     })
   };
   const googleLogin = () => {
+    console.log('click');
     googleSignIn()
       .then((result) => {
         console.log(result.user);
