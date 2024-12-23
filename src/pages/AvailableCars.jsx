@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 const AvailableCars = () => {
   const [cars, setCars] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [viewMode, setViewMode] = useState("grid"); // grid or list
-  const [sortBy, setSortBy] = useState("newest"); // 'newest' or 'price'
+  const [viewMode, setViewMode] = useState("grid"); 
+  const [sortBy, setSortBy] = useState("newest"); 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -25,26 +25,26 @@ const AvailableCars = () => {
     fetchCars();
   }, []);
 
-  // Filter cars based on search term
+  
   const filteredCars = cars.filter(
     (car) =>
       car.carModel.toLowerCase().includes(searchTerm.toLowerCase()) ||
       car.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Sort cars based on selected sorting option
+  
   const sortedCars = filteredCars.sort((a, b) => {
     if (sortBy === "newest") {
-      return new Date(b.dateAdded) - new Date(a.dateAdded); // Newest first
+      return new Date(b.dateAdded) - new Date(a.dateAdded); 
     }
     if (sortBy === "oldest") {
-      return new Date(a.dateAdded) - new Date(b.dateAdded); // Oldest first
+      return new Date(a.dateAdded) - new Date(b.dateAdded); 
     }
     if (sortBy === "priceLow") {
-      return a.dailyRentalPrice - b.dailyRentalPrice; // Lowest price first
+      return a.dailyRentalPrice - b.dailyRentalPrice; 
     }
     if (sortBy === "priceHigh") {
-      return b.dailyRentalPrice - a.dailyRentalPrice; // Highest price first
+      return b.dailyRentalPrice - a.dailyRentalPrice; 
     }
     return 0;
   });
