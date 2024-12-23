@@ -1,62 +1,58 @@
-import React, { useContext, useState } from "react";
-import Dropzone from "react-dropzone";
+import  { useContext, useState } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider/AuthProvider";
+import Swal from "sweetalert2";
+
 
 const AddCarPage = () => {
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const {user}=useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const carData = {
-    carModel: e.target.carModel.value,
-    dailyRentalPrice: e.target.dailyRentalPrice.value,
-    availability: e.target.availability.value,
-    vehicleRegistrationNumber: e.target.vehicleRegistrationNumber.value,
-    features: e.target.features.value,
-    description: e.target.description.value,
-    bookingCount: 0, // Default booking count
-    location: e.target.location.value,
-    images: uploadedFiles.map((file) => file.name),
-    user: user.email, // Add the user's email from the AuthContext
-    userName: user.displayName, // Add the user's display name
-    dateAdded: new Date().toISOString(), // Add the current date
+    // Upload images first and get their URLs
+    
+
+    const carData = {
+      carModel: e.target.carModel.value,
+      dailyRentalPrice: e.target.dailyRentalPrice.value,
+      availability: e.target.availability.value,
+      vehicleRegistrationNumber: e.target.vehicleRegistrationNumber.value,
+      features: e.target.features.value,
+      description: e.target.description.value,
+      bookingCount: 0, // Default booking count
+      location: e.target.location.value,
+      imageUrl: e.target.imgUrl.value, // Use the URLs of the uploaded images
+      user: user.email, // Add the user's email from the AuthContext
+      userName: user.displayName, // Add the user's display name
+      dateAdded: new Date().toISOString(), // Add the current date
+    };
+
+    try {
+      const result = await axios.post("http://localhost:5000/add-car", carData);
+     
+     if(result.config.data){
+      Swal.fire({
+        title:'successfully inserted'
+      })
+      navigate('/my-cars')
+     }
+
+    } catch (error) {
+      Swal.fire({
+        title:'failed to send data'
+      })
+      
+    } finally {
+      setLoading(false);
+    }
+    
   };
-
-  try {
-    setLoading(true);
-    await axios.post("http://localhost:5000/add-car", carData);
-    Swal.fire({
-      title: "Success!",
-      text: "Car has been added successfully!",
-      icon: "success",
-      confirmButtonText: "OK",
-    });
-    navigate("/my-cars"); // Navigate to the /my-cars page after successful addition
-    e.target.reset(); // Reset the form fields
-  } catch (error) {
-    Swal.fire({
-      title: "Error!",
-      text: "Failed to add car. Please try again.",
-      icon: "error",
-      confirmButtonText: "OK",
-    });
-  } finally {
-    setLoading(false);
-  }
-
-};
-
-
-
-
 
   return (
     <div className="hero bg-base-200 min-h-screen">
@@ -163,29 +159,8 @@ const AddCarPage = () => {
               <label className="label">
                 <span className="label-text">Images</span>
               </label>
-              <Dropzone
-                onDrop={(acceptedFiles) => setUploadedFiles(acceptedFiles)}
-                accept="image/*"
-              >
-                {({ getRootProps, getInputProps }) => (
-                  <div
-                    {...getRootProps()}
-                    className="border-dashed border-2 border-gray-300 p-4 text-center cursor-pointer"
-                  >
-                    <input {...getInputProps()} name="images" />
-                    <p>Drag & drop files here, or click to select files</p>
-                  </div>
-                )}
-              </Dropzone>
-              {uploadedFiles.length > 0 && (
-                <ul className="mt-2">
-                  {uploadedFiles.map((file, index) => (
-                    <li key={index} className="text-sm">
-                      {file.name}
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <input type="url" name="imgUrl"  />
+              
             </div>
             <div className="form-control mt-6">
               <button

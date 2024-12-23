@@ -1,104 +1,148 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useDropzone } from "react-dropzone";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 
 const MyCar = () => {
   const { user } = useContext(AuthContext);
   const [cars, setCars] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [selectedCar, setSelectedCar] = useState(null);
+  const [sortBy, setSortBy] = useState("");
 
-  // Fetch cars from the backend when the component mounts
+  const navigate = useNavigate();
+
+  // Fetch cars added by the user
   useEffect(() => {
     const fetchCars = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
-          `http://localhost:5000/myCar/${user?.email}`
+          `http://localhost:5000/myCar/${user.email}`
         );
         setCars(response.data);
       } catch (error) {
-        console.error("Failed to fetch cars:", error);
+        console.error("Error fetching cars:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    if (user?.email) {
-      fetchCars();
-    }
-  }, [user?.email]);
+    fetchCars();
+  }, [user.email]);
 
-  const handleDelete = async (carId) => {
-    try {
-      await axios.delete(`http://localhost:5000/delete-car/${carId}`);
-      setCars(cars.filter(car => car._id !== carId)); 
-      alert("Car deleted successfully");
-    } catch (error) {
-      console.error("Error deleting car:", error);
-      alert("Failed to delete car");
+  // Handle sorting logic
+  const handleSort = (option) => {
+    setSortBy(option);
+    let sortedCars = [...cars];
+    if (option === "Newest First") {
+      sortedCars.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+    } else if (option === "Oldest First") {
+      sortedCars.sort((a, b) => new Date(a.dateAdded) - new Date(b.dateAdded));
+    } else if (option === "Lowest First") {
+      sortedCars.sort((a, b) => a.dailyRentalPrice - b.dailyRentalPrice);
+    } else if (option === "Highest First") {
+      sortedCars.sort((a, b) => b.dailyRentalPrice - a.dailyRentalPrice);
     }
+    setCars(sortedCars);
   };
 
-//   const handleUpdate = (carId) => {
-//     // You can implement an update form or redirect to an update page here
-//     alert(`Update car with ID: ${carId}`);
-//   };
-
-  if (loading) return <div>Loading...</div>;
-
   return (
-    <div className="p-5">
-      <h1 className="text-2xl font-bold mb-4">My Cars</h1>
-      <div className="overflow-x-auto">
-        <table className="table table-zebra w-full">
-          <thead>
-            <tr>
-              <th>Car Image</th>
-              <th>Car Model</th>
-              <th>Daily Rental Price</th>
-              <th>Availability</th>
-              <th>Date Added</th>
-              <th>Actions</th> {/* Added Actions column */}
-            </tr>
-          </thead>
-          <tbody>
-            {cars.length === 0 ? (
+    <div className="container mx-auto p-5">
+      <h1 className="text-3xl font-bold text-center">My Cars</h1>
+
+      <div className="mt-4 flex justify-between items-center">
+        {/* Left Sorting: Date */}
+        <div className="flex gap-2">
+          <button
+            className={`btn ${sortBy === "Newest First" ? "btn-primary" : "btn-outline"}`}
+            onClick={() => handleSort("Newest First")}
+          >
+            Newest First
+          </button>
+          <button
+            className={`btn ${sortBy === "Oldest First" ? "btn-primary" : "btn-outline"}`}
+            onClick={() => handleSort("Oldest First")}
+          >
+            Oldest First
+          </button>
+        </div>
+
+        {/* Right Sorting: Price */}
+        <div className="flex gap-2">
+          <button
+            className={`btn ${sortBy === "Lowest First" ? "btn-primary" : "btn-outline"}`}
+            onClick={() => handleSort("Lowest First")}
+          >
+            Lowest First
+          </button>
+          <button
+            className={`btn ${sortBy === "Highest First" ? "btn-primary" : "btn-outline"}`}
+            onClick={() => handleSort("Highest First")}
+          >
+            Highest First
+          </button>
+        </div>
+      </div>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : cars.length === 0 ? (
+        <div className="mt-6 text-center">
+    <p className="text-lg">
+      No cars added yet.{" "}
+      <a href="/add-car" className="text-blue-500 underline">
+        Click here to add a car.
+      </a>
+    </p>
+  </div>
+      ) : (
+        <div className="mt-6 overflow-x-auto">
+          <table className="table table-zebra w-full">
+            <thead>
               <tr>
-                <td colSpan="6" className="text-center">No cars found.</td>
+                <th>Image</th>
+                <th>Car Model</th>
+                <th>Daily Rental Price</th>
+                <th>Availability</th>
+                <th>Actions</th>
               </tr>
-            ) : (
-              cars.map((car) => (
+            </thead>
+            <tbody>
+              {cars.map((car) => (
                 <tr key={car._id}>
                   <td>
                     <img
-                      src={`http://localhost:5000/images/${car.images[0]}`}
+                      src={car.imageUrl}
                       alt={car.carModel}
-                      className="w-20 h-20 object-cover"
+                      className="w-20 h-20"
                     />
                   </td>
                   <td>{car.carModel}</td>
-                  <td>${car.dailyRentalPrice}</td>
+                  <td>{car.dailyRentalPrice}</td>
                   <td>{car.availability}</td>
-                  <td>{new Date(car.dateAdded).toLocaleDateString()}</td>
                   <td>
                     <button
-                      onClick={() => handleUpdate(car._id)}
-                      className="btn btn-sm btn-primary mr-2"
+                      className="btn btn-warning mr-2"
+                      onClick={() => openEditModal(car)}
                     >
                       Update
                     </button>
                     <button
+                      className="btn btn-error"
                       onClick={() => handleDelete(car._id)}
-                      className="btn btn-sm btn-danger"
                     >
                       Delete
                     </button>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

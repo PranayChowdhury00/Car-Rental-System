@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
-import logo from '../../public/logo00.webp'
+import logo from '/public/logo00.webp'
 const Footer = () => {
   return (
     <div className="footer bg-gray-800 text-white py-10 rounded-xl">

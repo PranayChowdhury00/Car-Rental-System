@@ -1,5 +1,5 @@
 import Lottie from "lottie-react";
-import registerImg from "/public/login.json"; 
+import registerImg from "../../public/login.json"; 
 import { FaGoogle, FaLinkedin } from "react-icons/fa";
 import { RiFacebookCircleFill } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";

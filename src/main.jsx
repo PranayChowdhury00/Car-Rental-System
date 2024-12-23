@@ -12,11 +12,7 @@ import ErrorPage from "./pages/ErrorPage";
 import AddCarPage from "./pages/AddCarPage";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import MyCar from "./pages/MyCar";
-
-
-
-
-
+import AvailableCars from "./pages/AvailableCars";
 
 
 const router = createBrowserRouter([
@@ -47,6 +43,10 @@ const router = createBrowserRouter([
         element:<PrivateRoute>
           <MyCar></MyCar>
         </PrivateRoute>
+      },
+      {
+        path:'/available-car',
+        element:<AvailableCars></AvailableCars>
       }
     ]
   },

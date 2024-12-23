@@ -1,5 +1,5 @@
 import React from 'react';
-import bannerImg from '../../public/car.webp'; // Import local image
+import bannerImg from '/public/car.webp'; 
 
 const Banner = () => {
   return (
