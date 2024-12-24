@@ -1,148 +1,127 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const CarDetails = () => {
-  const { id } = useParams(); // Get the car ID from the URL
-  const [car, setCar] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const { id } = useParams();
+  const [carData, setCarData] = useState({}); // Initialize as an object
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
 
   useEffect(() => {
-    // Fetch car details when the component mounts
     axios
-      .get(`http://localhost:5000/car/${id}`)
-      .then((response) => {
-        setCar(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching car details:', error);
-      });
+      .get(`http://localhost:5000/cars/${id}`)
+      .then((response) => setCarData(response.data))
+      .catch((error) => console.error("Error fetching car details:", error));
   }, [id]);
 
-  const handleBooking = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
-
-  const handleConfirmBooking = async () => {
-    if (!car) return;
-  
-    // Ensure bookingCount is initialized
-    const updatedBookingCount = (car.bookingCount || 0) + 1;
-  
-    try {
-      // Send PUT request to update the booking count
-      const response = await axios.put(`http://localhost:5000/book-car/${id}`, {
-        ...car,
-        bookingCount: updatedBookingCount, // Increment booking count
-      });
-  
-      if (response.status === 200) {
-        // Update the state with the new booking count
-        setCar((prevCar) => ({
-          ...prevCar,
-          bookingCount: updatedBookingCount,
-        }));
-  
-        // Show success alert
-        Swal.fire({
-          title: 'Booking Confirmed!',
-          text: `Your booking for ${car.carModel} has been confirmed.`,
-          icon: 'success',
-          confirmButtonText: 'OK',
-        });
-      } else {
-        throw new Error('Failed to update booking count on the server.');
-      }
-    } catch (error) {
-      console.error('Error updating booking count:', error);
-  
-      // Show error alert
+  const handleBooking = () => {
+    if(carData.bookingCount>0){
       Swal.fire({
-        title: 'Error!',
-        text: 'Failed to confirm your booking. Please try again later.',
-        icon: 'error',
-        confirmButtonText: 'OK',
+        title:'Already Booked',
+        icon:"success",
+      })
+    }
+    else{
+      const data = axios
+      .post(`http://localhost:5000/bookings`, carData)
+      .then((response) => {
+        if (response.data.insertedId) {
+
+          const data=axios.patch(`http://localhost:5000/counting-booking/${id}`);
+          Swal.fire({
+            title: "Car Rent Successfully for A day",
+            icon: "success",
+          });
+          setIsModalOpen(false); // Close modal after successful booking
+        }
       });
-    } finally {
-      setShowModal(false); // Close the modal
     }
   };
-  
-
-  if (!car) return <p className="text-center">Loading car details...</p>;
-
-  const carImage = car.imageUrl || 'https://via.placeholder.com/500';
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex justify-center">
-          <img
-            src={carImage}
-            alt={car.carModel || 'Car Image'}
-            className="rounded-lg shadow-lg w-full md:w-96"
-          />
-        </div>
-        <div>
-          <h1 className="text-4xl font-bold text-center">{car.carModel}</h1>
-          <p className="mt-4 text-xl font-semibold text-gray-700">
-            <strong>Price Per Day:</strong> ${car.dailyRentalPrice}
-          </p>
-          <p className="mt-2 text-lg font-medium text-gray-600">
-            <strong>Availability:</strong> {car.availability}
-          </p>
-          <p className="mt-2 text-base text-gray-500">
-            <strong>Features:</strong> {car.features.split(', ').join(', ')}
-          </p>
-          <p className="mt-2 text-base text-gray-500">
-            <strong>Description:</strong> {car.description || 'No description available.'}
-          </p>
-          <p className="mt-2 text-base text-gray-500">
-            <strong>Booking Count:</strong> {car.bookingCount}
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center">
+      <div className="max-w-4xl w-full bg-gray-800 rounded-3xl shadow-lg overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          {/* Image Section */}
+          <div className="relative">
+            <img
+              src={carData.imageUrl || "https://via.placeholder.com/500"}
+              alt={carData.carModel || "Car"}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black via-transparent to-black opacity-70"></div>
+          </div>
 
-          <button
-            className="mt-6 btn btn-primary w-full"
-            onClick={handleBooking}
-          >
-            Book Now
-          </button>
+          {/* Details Section */}
+          <div className="p-6 flex flex-col justify-between">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">{carData.carModel || "Car Model"}</h1>
+              <p className="text-lg text-gray-400 mb-4">{carData.description || "Description not available."}</p>
+              <div className="text-lg space-y-2">
+                <p>
+                  <span className="font-semibold">Daily Rental Price:</span> $ {carData.dailyRentalPrice || "N/A"}
+                </p>
+                <p>
+                  <span className="font-semibold">Availability:</span> {carData.availability || "Unknown"}
+                </p>
+                <p>
+                  <span className="font-semibold">BookingCount :</span> {carData.bookingCount || 0}
+                </p>
+                <p className="font-semibold">Features:</p>
+                <ul className="list-disc list-inside pl-4">
+                  {carData.features && carData.features.length > 0 ? (
+                    carData.features.map((feature, index) => (
+                      <li key={index} className="text-gray-400">
+                        {feature}
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-gray-400">No features listed.</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+
+            {/* Booking Button */}
+            <div className="mt-6">
+              <button
+                onClick={() => setIsModalOpen(true)} // Open modal on click
+                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-blue-500 text-white rounded-lg font-semibold text-lg transition-all duration-300"
+              >
+                Book Now
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Modal for booking confirmation */}
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="modal-box w-96 bg-white rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold text-center mb-4">Booking Confirmation</h2>
-            <p className="text-lg">
-              <strong>Car Model:</strong> {car.carModel}
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-gray-900 rounded-lg shadow-lg p-6 w-96">
+            <h2 className="text-2xl font-bold mb-4">Booking Confirmation</h2>
+            <p>
+              <span className="font-semibold">Car Model:</span> {carData.carModel}
             </p>
-            <p className="text-lg">
-              <strong>Price Per Day:</strong> ${car.dailyRentalPrice}
+            <p>
+              <span className="font-semibold">Daily Rental Price:</span> ${carData.dailyRentalPrice}
             </p>
-            <p className="text-lg">
-              <strong>Availability:</strong> {car.availability}
+            <p>
+              <span className="font-semibold">Availability:</span> {carData.availability}
             </p>
-            <p className="text-lg">
-              <strong>Features:</strong> {car.features.split(', ').join(', ')}
-            </p>
-            <p className="text-lg">
-              <strong>Description:</strong> {car.description || 'No description available.'}
-            </p>
-
-            <div className="modal-action flex justify-around mt-6">
+            <div className="mt-6 flex justify-between">
               <button
-                className="btn btn-success"
-                onClick={handleConfirmBooking}
-              >
-                Confirm Booking
-              </button>
-              <button
-                className="btn btn-secondary"
-                onClick={handleCloseModal}
+                onClick={() => setIsModalOpen(false)} // Close modal
+                className="py-2 px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all duration-300"
               >
                 Cancel
+              </button>
+              <button
+                onClick={handleBooking} // Confirm booking
+                className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-all duration-300"
+              >
+                Confirm
               </button>
             </div>
           </div>

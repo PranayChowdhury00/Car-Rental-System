@@ -16,14 +16,15 @@ const AddCarPage = () => {
     e.preventDefault();
 
     // Upload images first and get their URLs
-    
+    const featuresInput = e.target.features.value;
+    const featuresArray = featuresInput.split(",").map((feature) => feature.trim());
 
     const carData = {
       carModel: e.target.carModel.value,
       dailyRentalPrice: e.target.dailyRentalPrice.value,
       availability: e.target.availability.value,
       vehicleRegistrationNumber: e.target.vehicleRegistrationNumber.value,
-      features: e.target.features.value,
+      features: featuresArray,
       description: e.target.description.value,
       bookingCount: 0, // Default booking count
       location: e.target.location.value,
