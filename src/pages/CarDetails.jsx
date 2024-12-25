@@ -7,7 +7,7 @@ const CarDetails = () => {
   const { id } = useParams();
   const [carData, setCarData] = useState({}); // Initialize as an object
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-
+console.log(carData.features);
   useEffect(() => {
     axios
       .get(`http://localhost:5000/cars/${id}`)
@@ -70,6 +70,7 @@ const CarDetails = () => {
                 </p>
                 <p className="font-semibold">Features:</p>
                 <ul className="list-disc list-inside pl-4">
+                  
                   {carData.features && carData.features.length > 0 ? (
                     carData.features.map((feature, index) => (
                       <li key={index} className="text-gray-400">

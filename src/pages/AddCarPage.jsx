@@ -17,11 +17,15 @@ const AddCarPage = () => {
 
     // Upload images first and get their URLs
     const featuresInput = e.target.features.value;
+    
     const featuresArray = featuresInput.split(",").map((feature) => feature.trim());
 
     const carData = {
-      carModel: e.target.carModel.value,
-      dailyRentalPrice: e.target.dailyRentalPrice.value,
+       carModel: e.target.carModel.value,
+      // model: e.target.carModel.value,
+       dailyRentalPrice: e.target.dailyRentalPrice.value,
+      // price: e.target.dailyRentalPrice.value,
+
       availability: e.target.availability.value,
       vehicleRegistrationNumber: e.target.vehicleRegistrationNumber.value,
       features: featuresArray,
@@ -32,6 +36,7 @@ const AddCarPage = () => {
       user: user.email, // Add the user's email from the AuthContext
       userName: user.displayName, // Add the user's display name
       dateAdded: new Date().toISOString(), // Add the current date
+      bookingStatus:'pending'
     };
 
     try {

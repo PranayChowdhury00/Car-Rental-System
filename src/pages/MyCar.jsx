@@ -109,7 +109,7 @@ const MyCar = () => {
     };
   
     try {
-      const response = await axios.put(
+      const response = await axios.patch(
         `http://localhost:5000/update-car/${selectCar._id}`,
         updatedCarData
       );
@@ -355,7 +355,7 @@ const MyCar = () => {
               <label className="label">
                 <span className="label-text">Images</span>
               </label>
-              <input className="border-2 py-2 px-2 rounded-lg" type="url" name="imgUrl" placeholder="imgUrl" defaultValue={selectCar.imgUrl}/>
+              <input className="border-2 py-2 px-2 rounded-lg" type="url" name="imgUrl" placeholder="imgUrl" defaultValue={selectCar.imageUrl}/>
               
             </div>
             <div className="form-control mt-6">

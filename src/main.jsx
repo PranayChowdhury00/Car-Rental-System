@@ -52,7 +52,9 @@ const router = createBrowserRouter([
       },
       {
         path:"/car-details/:id",
-        element:<CarDetails></CarDetails>
+        element:<PrivateRoute>
+          <CarDetails></CarDetails>
+        </PrivateRoute>
       },
       {
         path:'/my-bookings',
