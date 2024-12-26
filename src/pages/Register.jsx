@@ -16,10 +16,10 @@ const Register = () => {
         const email = e.target.email.value;
         const password = e.target.password.value;
         const url = e.target.url.value;
-        console.log(name,email,password,url);
+        // console.log(name,email,password,url);
         createNewUser(email,password)
         .then(res=>{
-            console.log(res.user)
+            // console.log(res.user)
            if(res.user){
             swal({
                 title: "Registration Successful!",
@@ -31,7 +31,7 @@ const Register = () => {
            }
         })
         .catch(error=>{
-            console.log(error.message);
+            console.err(error.message);
             swal({
                 title: "Registration Failed",
                 text: error.message,

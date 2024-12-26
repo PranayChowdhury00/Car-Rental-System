@@ -13,10 +13,10 @@ const Login = () => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email, password);
+    // console.log(email, password);
     signInUser(email, password)
       .then((result) => {
-        console.log(result.user);
+        // console.log(result.user);
         if(result.user){
             swal({
                 title: "Registration Successful!",
@@ -28,7 +28,7 @@ const Login = () => {
             }
       })
       .catch(error=>{
-        console.log(error.message);
+        console.err(error.message);
         swal({
             title: "Registration Failed",
             text: error.message,
@@ -39,14 +39,14 @@ const Login = () => {
     })
   };
   const googleLogin = () => {
-    console.log('click');
+    // console.log('click');
     googleSignIn()
       .then((result) => {
-        console.log(result.user);
+        // console.log(result.user);
         navigate('/')
       })
       .catch((err) => {
-        console.log(err.message);
+        console.err(err.message);
       });
   };
 
