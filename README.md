@@ -1,8 +1,37 @@
-# React + Vite
+# Car Rental System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Purpose
+A web-based application to manage car rentals, allowing users to book and cancel rentals with ease. The system also supports administrative features like tracking booking counts and updating booking statuses.
 
-Currently, two official plugins are available:
+## Live URL
+[Car Rental System Live](#)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+
+## Key Features
+- **User Functionality:**
+  - Browse available cars with details like model, price, and features.
+  - Book a car for specific dates.
+  - Cancel bookings.
+  
+- **Admin Functionality:**
+  - Track booking statuses and counts.
+  - Manage car availability.
+  
+- **Technical Features:**
+  - Integrated booking system with real-time updates.
+  - Separate collections for cars and bookings.
+  - RESTful API endpoints to handle CRUD operations.
+
+## NPM Packages Used
+### Backend
+- **express**: Framework for building the server and handling routes.
+- **cors**: Middleware for enabling Cross-Origin Resource Sharing.
+- **mongodb**: MongoDB driver for connecting and performing database operations.
+- **dotenv**: For managing environment variables securely.
+- **body-parser**: Middleware for parsing incoming request bodies.
+
+### Frontend
+- **axios**: For making HTTP requests to the server.
+- **sweetalert2**: For displaying beautiful alerts and popups.
+- **react-dropzone**: For image upload handling.
