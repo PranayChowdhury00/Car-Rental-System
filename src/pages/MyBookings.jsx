@@ -49,23 +49,6 @@ const MyBookings = () => {
     ],
   };
 
-  // const handleStatusChange = (id) => {
-  //   axios.patch(`http://localhost:5000/confirm/${id}`).then((res) => {
-  //     if (res.data.modifiedCount > 0) {
-  //       Swal.fire({
-  //         title: "Order Confirmed",
-  //         icon: "success",
-  //       });
-  //       window.location.reload(true);
-  //     } else {
-  //       Swal.fire({
-  //         title: "Order not updated",
-  //         icon: "warning",
-  //       });
-  //     }
-  //   });
-  // };
-
   const handleCancelConfirm = (id) => {
     Swal.fire({
       title: "Are you sure you want to cancel this booking?",
@@ -76,7 +59,6 @@ const MyBookings = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         handleStatusCancel(id);
-        // handleStatusCancelForAddCar(id);
       }
     });
   };
@@ -90,7 +72,6 @@ const MyBookings = () => {
             title: "Cancelled Order",
             icon: "success",
           });
-          // Update state instead of reloading the page
           setBookings((prev) => prev.filter((booking) => booking._id !== id));
         } else {
           Swal.fire({
@@ -108,33 +89,6 @@ const MyBookings = () => {
       });
   };
 
-  // const handleStatusCancelForAddCar = (id) => {
-  //   axios
-  //     .patch(`http://localhost:5000/cancelAddCar/${id}`)
-  //     .then((res) => {
-  //       if (res.data.modifiedCount > 0) {
-  //         Swal.fire({
-  //           title: "Cancelled Order",
-  //           icon: "success",
-  //         });
-  //         // Update state instead of reloading the page
-  //         setBookings((prev) => prev.filter((booking) => booking._id !== id));
-  //       } else {
-  //         Swal.fire({
-  //           title: "Order not updated",
-  //           icon: "error",
-  //         });
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error cancelling booking:", error);
-  //       Swal.fire({
-  //         title: "Failed to cancel order",
-  //         icon: "error",
-  //       });
-  //     });
-  // };
-  
   const handleModifyBooking = (id) => {
     const booking = bookings.find((b) => b._id === id);
     setSelectedBooking(booking);
@@ -187,7 +141,6 @@ const MyBookings = () => {
       });
   };
 
-
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-center mb-6">My Bookings</h1>
@@ -234,7 +187,7 @@ const MyBookings = () => {
                     <td className="border px-4 py-2 text-center">
                       {booking.carModel || "N/A"}
                     </td>
-                    <td className="border px-4 py-2 text-center">
+                    <td className="border px-4 py-2 text-center ">
                       {format(new Date(booking.startDate), "dd-MM-yyyy HH:mm")}
                     </td>
                     <td className="border px-4 py-2 text-center">
@@ -253,7 +206,7 @@ const MyBookings = () => {
                       {booking.bookingStatus}
                     </td>
                     <td className="border px-4 py-2 text-center">
-                      <div className="flex justify-center gap-2">
+                      <div className="flex justify-center gap-2 flex-wrap">
                         <button
                           onClick={() => handleCancelConfirm(booking._id)}
                           className="px-2 py-1 text-sm bg-red-500 text-white rounded shadow hover:bg-red-600 flex items-center gap-1"
@@ -278,39 +231,35 @@ const MyBookings = () => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded shadow-lg w-96">
-            <h3 className="text-lg font-bold mb-4">Modify Booking Dates</h3>
+            <h2 className="text-xl font-semibold mb-4">Modify Booking</h2>
             <div className="mb-4">
-              <label className="block mb-2">Start Date:</label>
+              <label className="block mb-2">Start Date</label>
               <DatePicker
                 selected={newStartDate}
                 onChange={(date) => setNewStartDate(date)}
-                dateFormat="dd-MM-yyyy HH:mm"
-                showTimeSelect
-                className="border px-2 py-1 w-full"
+                className="w-full border px-3 py-2 rounded"
               />
             </div>
             <div className="mb-4">
-              <label className="block mb-2">End Date:</label>
+              <label className="block mb-2">End Date</label>
               <DatePicker
                 selected={newEndDate}
                 onChange={(date) => setNewEndDate(date)}
-                dateFormat="dd-MM-yyyy HH:mm"
-                showTimeSelect
-                className="border px-2 py-1 w-full"
+                className="w-full border px-3 py-2 rounded"
               />
             </div>
-            <div className="flex justify-end gap-4">
+            <div className="flex justify-between">
               <button
                 onClick={handleConfirmModification}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                className="px-4 py-2 bg-green-500 text-white rounded shadow hover:bg-green-600"
               >
                 Confirm
               </button>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                className="px-4 py-2 bg-gray-300 text-black rounded shadow hover:bg-gray-400"
               >
-                Cancel
+                Close
               </button>
             </div>
           </div>

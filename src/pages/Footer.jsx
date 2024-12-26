@@ -3,7 +3,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import logo from '/public/logo00.webp'
 const Footer = () => {
   return (
-    <div className="footer bg-gray-800 text-white py-10 rounded-xl">
+    <div className="footer bg-gray-800 text-white py-10 ">
       <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between px-6">
         {/* Logo and Website Name */}
         <div className="flex items-center mb-6 lg:mb-0">

@@ -11,7 +11,7 @@ const AvailableCars = () => {
   const [viewMode, setViewMode] = useState("grid");
   const [sortBy, setSortBy] = useState("newest");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // New error state
+  const [error, setError] = useState(null); // Error state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,23 +66,23 @@ const AvailableCars = () => {
   };
 
   return (
-    <div className="container mx-auto p-5 ">
-      <h1 className="text-3xl font-bold text-center">Available Cars</h1>
+    <div className="container mx-auto p-5">
+      <h1 className="text-2xl md:text-3xl font-bold text-center">Available Cars</h1>
 
-      <div className="mt-4 py-5 flex justify-between items-center ">
+      <div className="mt-4 py-5 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
         <input
           type="text"
-          className="input input-bordered"
+          className="input input-bordered w-full md:w-1/2"
           placeholder="Search by model, brand, or location"
           value={searchTerm}
           onChange={handleSearch}
         />
-        <div className="flex items-center space-x-4">
-          <button onClick={handleViewModeToggle} className="btn btn-primary">
+        <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+          <button onClick={handleViewModeToggle} className="btn btn-primary w-full md:w-auto">
             Toggle {viewMode === "grid" ? "List" : "Grid"} View
           </button>
           <select
-            className="select select-bordered"
+            className="select select-bordered w-full md:w-auto"
             value={sortBy}
             onChange={handleSortChange}
           >
@@ -95,7 +95,7 @@ const AvailableCars = () => {
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-center">Loading...</p>
       ) : error ? (
         <div className="mt-6 text-center">
           <p className="text-red-500">{error}</p>
@@ -107,33 +107,31 @@ const AvailableCars = () => {
       ) : (
         <div
           className={
-            viewMode === "grid" ? "grid grid-cols-3 gap-6" : "space-y-6"
+            viewMode === "grid"
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              : "space-y-6"
           }
         >
           {sortedCars.map((car) => (
             <div
               key={car._id}
-              className={
-                viewMode === "grid"
-                  ? "card card-compact bg-base-100 shadow-md"
-                  : "card card-compact bg-base-100 shadow-md list-view"
-              }
+              className="card card-compact bg-base-100 shadow-md"
             >
               <figure>
                 <img
                   src={car.imageUrl}
                   alt={car.carModel}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-48 sm:h-60 object-cover"
                 />
               </figure>
               <div className="card-body">
-                <h3 className="text-xl font-semibold">{car.carModel}</h3>
-                <p>{car.location}</p>
+                <h3 className="text-lg md:text-xl font-semibold">{car.carModel}</h3>
+                <p className="text-sm md:text-base">{car.location}</p>
                 <p className="text-lg font-bold">{car.dailyRentalPrice} BDT</p>
                 <div className="card-actions justify-end">
-                  {car?.user == user?.email ? (
+                  {car?.user === user?.email ? (
                     <button
-                     disabled
+                      disabled
                       onClick={() => navigate(`/car-details/${car._id}`)}
                       className="btn btn-primary"
                     >

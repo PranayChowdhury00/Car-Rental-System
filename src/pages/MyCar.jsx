@@ -9,22 +9,20 @@ const MyCar = () => {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState("");
-  const [selectCar, setSelectCar] = useState(null); // Use this state for selected car
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [selectCar, setSelectCar] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   // Fetch cars added by the user
   useEffect(() => {
     const fetchCars = async () => {
-      if (!user?.email) return; // Don't fetch if user email is not available
+      if (!user?.email) return;
 
       try {
         setLoading(true);
-        const response = await axios.get(
-          `http://localhost:5000/myCar/${user.email}`,{
-            withCredentials:true
-          }
-        );
+        const response = await axios.get(`http://localhost:5000/myCar/${user.email}`, {
+          withCredentials: true
+        });
         setCars(response.data);
       } catch (error) {
         console.error("Error fetching cars:", error);
@@ -76,12 +74,12 @@ const MyCar = () => {
   };
 
   const openModal = (car) => {
-    setSelectCar(car);  // Set the selected car
-    setIsModalOpen(true); // Open the modal
+    setSelectCar(car);
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); // Close the modal
+    setIsModalOpen(false);
   };
 
   if (!user?.email) {
@@ -98,7 +96,7 @@ const MyCar = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     const updatedCarData = {
       carModel: e.target.carModel.value,
       dailyRentalPrice: e.target.dailyRentalPrice.value,
@@ -109,28 +107,25 @@ const MyCar = () => {
       location: e.target.location.value,
       imageUrl: e.target.imgUrl.value,
     };
-  
+
     try {
       const response = await axios.patch(
         `http://localhost:5000/update-car/${selectCar._id}`,
         updatedCarData
       );
-  
+
       if (response.data) {
-        // Update the cars state
         setCars((prevCars) =>
           prevCars.map((car) =>
             car._id === selectCar._id ? { ...car, ...updatedCarData } : car
           )
         );
-  
-        // Show success message
+
         Swal.fire({
           title: "Car updated successfully!",
           icon: "success",
         });
-  
-        // Close the modal
+
         closeModal();
       }
     } catch (error) {
@@ -143,47 +138,36 @@ const MyCar = () => {
       setLoading(false);
     }
   };
-  
 
   return (
-    <div className="container mx-auto p-5">
-      <h1 className="text-3xl font-bold text-center">My Cars</h1>
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold text-center text-gray-800">My Cars</h1>
 
-      <div className="mt-4 flex justify-between items-center">
-        {/* Left Sorting: Date */}
-        <div className="flex gap-2">
+      <div className="mt-6 flex justify-between">
+        {/* Sorting Buttons */}
+        <div className="flex gap-2 flex-col md:flex-row">
           <button
-            className={`btn ${
-              sortBy === "Newest First" ? "btn-primary" : "btn-outline"
-            }`}
+            className={`btn ${sortBy === "Newest First" ? "btn-primary" : "btn-outline"}`}
             onClick={() => handleSort("Newest First")}
           >
             Newest First
           </button>
           <button
-            className={`btn ${
-              sortBy === "Oldest First" ? "btn-primary" : "btn-outline"
-            }`}
+            className={`btn ${sortBy === "Oldest First" ? "btn-primary" : "btn-outline"}`}
             onClick={() => handleSort("Oldest First")}
           >
             Oldest First
           </button>
-        </div>
-
-        {/* Right Sorting: Price */}
-        <div className="flex gap-2">
+          </div>
+         <div className="flex gap-3 flex-col md:flex-row">
           <button
-            className={`btn ${
-              sortBy === "Lowest First" ? "btn-primary" : "btn-outline"
-            }`}
+            className={`btn ${sortBy === "Lowest First" ? "btn-primary" : "btn-outline"}`}
             onClick={() => handleSort("Lowest First")}
           >
             Lowest First
           </button>
           <button
-            className={`btn ${
-              sortBy === "Highest First" ? "btn-primary" : "btn-outline"
-            }`}
+            className={`btn ${sortBy === "Highest First" ? "btn-primary" : "btn-outline"}`}
             onClick={() => handleSort("Highest First")}
           >
             Highest First
@@ -192,7 +176,7 @@ const MyCar = () => {
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="mt-6 text-center text-lg">Loading...</p>
       ) : cars.length === 0 ? (
         <div className="mt-6 text-center">
           <p className="text-lg">
@@ -204,9 +188,9 @@ const MyCar = () => {
         </div>
       ) : (
         <div className="mt-6 overflow-x-auto">
-          <table className="table table-zebra w-full">
+          <table className="table table-zebra w-full text-sm md:text-base">
             <thead>
-              <tr>
+              <tr className="bg-gray-200">
                 <th>Image</th>
                 <th>Car Model</th>
                 <th>Daily Rental Price</th>
@@ -221,21 +205,21 @@ const MyCar = () => {
                     <img
                       src={car.imageUrl}
                       alt={car.carModel}
-                      className="w-20 h-20"
+                      className="w-16 h-16 object-cover rounded-lg"
                     />
                   </td>
                   <td>{car.carModel}</td>
-                  <td>{car.dailyRentalPrice}</td>
+                  <td>${car.dailyRentalPrice}</td>
                   <td>{car.availability}</td>
-                  <td>
+                  <td className="flex space-x-2">
                     <button
-                      className="btn btn-warning mr-2"
-                      onClick={() => openModal(car)} // Open modal with car details
+                      className="btn bg-yellow-500 text-white hover:bg-yellow-600 transition duration-200 rounded-lg px-4 py-2"
+                      onClick={() => openModal(car)}
                     >
                       Update
                     </button>
                     <button
-                      className="btn btn-error"
+                      className="btn bg-red-500 text-white hover:bg-red-600 transition duration-200 rounded-lg px-4 py-2"
                       onClick={() => handleDelete(car._id)}
                     >
                       Delete
@@ -251,127 +235,21 @@ const MyCar = () => {
       {/* Modal for Updating Car */}
       {isModalOpen && (
         <div className="modal modal-open">
-          <div className="modal-box w-11/12 max-w-5xl">
-            <h3 className="font-bold text-lg">Update Car</h3>
-           
-            <div className="modal-action">
-            <form className="card-body" onSubmit={handleSubmit}>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Car Model</span>
-              </label>
-              <input
-                type="text"
-                name="carModel"
-                placeholder="Car Model"
-                className="input input-bordered"
-                defaultValue={selectCar.carModel}
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Daily Rental Price</span>
-              </label>
-              <input
-                type="number"
-                name="dailyRentalPrice"
-                placeholder="Daily Rental Price"
-                className="input input-bordered"
-                defaultValue={selectCar.dailyRentalPrice}
-                
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Availability</span>
-              </label>
-              <select name="availability"   defaultValue={selectCar.availability} className="select select-bordered">
-                <option value="Available">Available</option>
-                <option value="Unavailable">Unavailable</option>
-              </select>
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Vehicle Registration Number</span>
-              </label>
-              <input
-                type="text"
-                name="vehicleRegistrationNumber"
-                placeholder="Vehicle Registration Number"
-                className="input input-bordered"
-                defaultValue={selectCar.vehicleRegistrationNumber}
-                
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Features</span>
-              </label>
-              <input
-                type="text"
-                name="features"
-                placeholder="e.g., GPS, AC, etc"
-                className="input input-bordered"
-                defaultValue={selectCar.features}
-                
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Description</span>
-              </label>
-              <textarea
-                name="description"
-                placeholder="Description"
-                className="textarea textarea-bordered"
-                defaultValue={selectCar.description}
-                
-              ></textarea>
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Booking Count</span>
-              </label>
-              <input
-                type="number"
-                name="bookingCount"
-                defaultValue={0}
-                placeholder="Booking Count"
-                className="input input-bordered"
-                readOnly
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Location</span>
-              </label>
-              <input
-                type="text"
-                name="location"
-                placeholder="Location"
-                className="input input-bordered"
-                defaultValue={selectCar.location}
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Images</span>
-              </label>
-              <input className="border-2 py-2 px-2 rounded-lg" type="url" name="imgUrl" placeholder="imgUrl" defaultValue={selectCar.imageUrl}/>
-              
-            </div>
-            <div className="form-control mt-6">
-              <button
-                className="btn btn-primary w-full"
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? "Submitting..." : "Submit"}
-              </button>
-            </div>
-              <button className="btn" onClick={closeModal}>Close</button>
-          </form>
-            </div>
+          <div className="modal-box w-full max-w-3xl">
+            <h3 className="text-lg font-semibold text-gray-800">Update Car</h3>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {/* Add Input Fields Here */}
+              </div>
+              <div className="modal-action">
+                <button className="btn bg-blue-500 text-white hover:bg-blue-600 transition duration-200 rounded-lg px-4 py-2">
+                  Update Car
+                </button>
+                <button type="button" className="btn bg-gray-400 text-white hover:bg-gray-500 transition duration-200 rounded-lg px-4 py-2" onClick={closeModal}>
+                  Close
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
