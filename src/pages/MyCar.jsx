@@ -159,7 +159,7 @@ const MyCar = () => {
             Oldest First
           </button>
           </div>
-         <div className="flex gap-3 flex-col md:flex-row">
+         <div className="flex gap-2">
           <button
             className={`btn ${sortBy === "Lowest First" ? "btn-primary" : "btn-outline"}`}
             onClick={() => handleSort("Lowest First")}
@@ -239,17 +239,95 @@ const MyCar = () => {
             <h3 className="text-lg font-semibold text-gray-800">Update Car</h3>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {/* Add Input Fields Here */}
+                <div className="form-control">
+                  <label className="label">Car Model</label>
+                  <input
+                    type="text"
+                    name="carModel"
+                    placeholder="Car Model"
+                    className="input input-bordered"
+                    defaultValue={selectCar.carModel}
+                  />
+                </div>
+                <div className="form-control">
+                  <label className="label">Daily Rental Price</label>
+                  <input
+                    type="number"
+                    name="dailyRentalPrice"
+                    placeholder="Daily Rental Price"
+                    className="input input-bordered"
+                    defaultValue={selectCar.dailyRentalPrice}
+                  />
+                </div>
+                <div className="form-control">
+                  <label className="label">Availability</label>
+                  <select
+                    name="availability"
+                    defaultValue={selectCar.availability}
+                    className="select select-bordered"
+                  >
+                    <option value="Available">Available</option>
+                    <option value="Unavailable">Unavailable</option>
+                  </select>
+                </div>
+                <div className="form-control">
+                  <label className="label">Vehicle Registration Number</label>
+                  <input
+                    type="text"
+                    name="vehicleRegistrationNumber"
+                    placeholder="Vehicle Registration Number"
+                    className="input input-bordered"
+                    defaultValue={selectCar.vehicleRegistrationNumber}
+                  />
+                </div>
+                <div className="form-control">
+                  <label className="label">Features</label>
+                  <input
+                    type="text"
+                    name="features"
+                    placeholder="e.g., GPS, AC, etc"
+                    className="input input-bordered"
+                    defaultValue={selectCar.features}
+                  />
+                </div>
+              </div>
+              <div className="form-control">
+                <label className="label">Description</label>
+                <textarea
+                  name="description"
+                  placeholder="Description"
+                  className="textarea textarea-bordered"
+                  defaultValue={selectCar.description}
+                />
+              </div>
+              <div className="form-control">
+                <label className="label">Location</label>
+                <input
+                  type="text"
+                  name="location"
+                  placeholder="Location"
+                  className="input input-bordered"
+                  defaultValue={selectCar.location}
+                />
+              </div>
+              <div className="form-control">
+                <label className="label">Image URL</label>
+                <input
+                  type="text"
+                  name="imgUrl"
+                  placeholder="Image URL"
+                  className="input input-bordered"
+                  defaultValue={selectCar.imageUrl}
+                />
               </div>
               <div className="modal-action">
-                <button className="btn bg-blue-500 text-white hover:bg-blue-600 transition duration-200 rounded-lg px-4 py-2">
-                  Update Car
-                </button>
-                <button type="button" className="btn bg-gray-400 text-white hover:bg-gray-500 transition duration-200 rounded-lg px-4 py-2" onClick={closeModal}>
+                <button className="btn btn-primary">Update Car</button>
+                <button type="button" className="btn" onClick={closeModal}>
                   Close
                 </button>
               </div>
             </form>
+
           </div>
         </div>
       )}
