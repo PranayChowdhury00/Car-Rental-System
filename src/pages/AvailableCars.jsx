@@ -19,7 +19,7 @@ const AvailableCars = () => {
       try {
         setLoading(true);
         setError(null); // Reset error on retry
-        const response = await axios.get("http://localhost:5000/cars");
+        const response = await axios.get("https://carrent-eight.vercel.app/cars");
         setCars(response.data);
       } catch (error) {
         console.error("Error fetching cars:", error);

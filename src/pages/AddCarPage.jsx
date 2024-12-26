@@ -32,7 +32,7 @@ const AddCarPage = () => {
     };
 
     try {
-      const result = await axios.post("http://localhost:5000/add-car", carData);
+      const result = await axios.post("https://carrent-eight.vercel.app/add-car", carData);
       if (result.config.data) {
         Swal.fire({ title: "Successfully inserted!" });
         navigate("/my-cars");

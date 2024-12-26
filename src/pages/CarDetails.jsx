@@ -11,19 +11,19 @@ const CarDetails = () => {
   const [carData, setCarData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date()); // Added state for end date
+  const [endDate, setEndDate] = useState(new Date()); 
   const {user}=useContext(AuthContext);
    const [availability,setAvailability]=useState(true);
   
-  // Fetch car details from the backend
+  
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/cars/${id}`)
+      .get(`https://carrent-eight.vercel.app/cars/${id}`)
       .then((response) => setCarData(response.data))
       .catch((error) => console.error("Error fetching car details:", error));
   }, [id]);
 
-  // Handle booking of the car
+  
   const handleBooking = () => {
     if (carData.bookingCount > 0  ) {
       Swal.fire({
@@ -38,15 +38,21 @@ const CarDetails = () => {
         dailyRentalPrice: carData.dailyRentalPrice,
         startDate,
         endDate,
-        userEmail: user?.email, // Add the logged-in user's email here
-        bookingStatus: "confirm", // Default status for new bookings
+        userEmail: user?.email, 
+        bookingStatus: "confirm", 
       };
   
       axios
-        .post('http://localhost:5000/bookings', data)
+        .post('https://carrent-eight.vercel.app/bookings', data)
         .then((response) => {
           if (response.data.success) {
-            axios.patch(`http://localhost:5000/counting-booking/${id}`);
+
+            setCarData((prevData) => ({
+              ...prevData,
+              bookingCount: prevData.bookingCount + 1,
+            }));
+
+            axios.patch(`https://carrent-eight.vercel.app/counting-booking/${id}`);
             Swal.fire({
               title: "Car Rent Successfully ",
               icon: "success",
@@ -62,15 +68,15 @@ const CarDetails = () => {
   
   useEffect(() => {
     if (carData?.bookingStatus === "pending" || carData?.bookingStatus === "cancelled") {
-      setAvailability(true); // Car can be booked
+      setAvailability(true); 
       
     } else {
-      setAvailability(false); // Car already booked
+      setAvailability(false); 
     }
   }, [carData]);
   
 
-  // Handle date changes
+ 
   const handleDateChange = (date, type) => {
     if (type === "start") {
       setStartDate(date);
@@ -83,7 +89,7 @@ const CarDetails = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex items-center justify-center">
       <div className="max-w-4xl w-full bg-gray-800 rounded-3xl shadow-lg overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          {/* Image Section */}
+        
           <div className="relative">
             <img
               src={carData.imageUrl || "https://via.placeholder.com/500"}
@@ -93,7 +99,7 @@ const CarDetails = () => {
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black via-transparent to-black opacity-70"></div>
           </div>
 
-          {/* Details Section */}
+          
           <div className="p-6 flex flex-col justify-between">
             <div>
               <h1 className="text-4xl font-bold mb-2">{carData.carModel || "Car Model"}</h1>
@@ -115,7 +121,7 @@ const CarDetails = () => {
               </div>
             </div>
 
-            {/* Booking Button */}
+            
             <div className="mt-6">
             <button
                 onClick={() => setIsModalOpen(true)}
@@ -134,7 +140,7 @@ const CarDetails = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-gray-900 rounded-lg shadow-lg p-6 w-96">
@@ -145,7 +151,7 @@ const CarDetails = () => {
             <p><span className="font-semibold">Availability:</span> {carData.availability}</p>
             
             
-            {/* Date Picker for Start and End Date */}
+           
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold">Start Date</label>
@@ -172,13 +178,13 @@ const CarDetails = () => {
 
             <div className="mt-6 flex justify-between">
               <button
-                onClick={() => setIsModalOpen(false)} // Close modal
+                onClick={() => setIsModalOpen(false)} 
                 className="py-2 px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all duration-300"
               >
                 Cancel
               </button>
               <button
-                onClick={handleBooking} // Confirm booking
+                onClick={handleBooking} 
                 className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-all duration-300"
               >
                 Confirm

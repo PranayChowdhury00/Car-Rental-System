@@ -32,7 +32,7 @@ const AuthProvider = ({children}) => {
             // console.log('state capture',currentUser?.email);
             if(currentUser?.email){
                 const user = {email:currentUser.email}
-                axios.post('http://localhost:5000/jwt',user,{
+                axios.post('https://carrent-eight.vercel.app/jwt',user,{
                     withCredentials:true
                 })
                 .then(res=>{
@@ -41,7 +41,7 @@ const AuthProvider = ({children}) => {
                  })
             }
             else{
-                axios.post('http://localhost:5000/logout',{},{
+                axios.post('https://carrent-eight.vercel.app/logout',{},{
                     withCredentials:true
                     
                 })

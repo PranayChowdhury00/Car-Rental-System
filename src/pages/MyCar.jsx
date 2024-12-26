@@ -20,7 +20,7 @@ const MyCar = () => {
 
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:5000/myCar/${user.email}`, {
+        const response = await axios.get(`https://carrent-eight.vercel.app/myCar/${user.email}`, {
           withCredentials: true
         });
         setCars(response.data);
@@ -63,7 +63,7 @@ const MyCar = () => {
       });
 
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:5000/delete-car/${carId}`);
+        await axios.delete(`https://carrent-eight.vercel.app/delete-car/${carId}`);
         setCars(cars.filter((car) => car._id !== carId));
         Swal.fire("Deleted!", "The car has been deleted.", "success");
       }
@@ -110,7 +110,7 @@ const MyCar = () => {
 
     try {
       const response = await axios.patch(
-        `http://localhost:5000/update-car/${selectCar._id}`,
+        `https://carrent-eight.vercel.app/update-car/${selectCar._id}`,
         updatedCarData
       );
 

@@ -27,7 +27,7 @@ const MyBookings = () => {
   useEffect(() => {
     if (user?.email) {
       axios
-        .get(`http://localhost:5000/my-booking/email?email=${user.email}`, {
+        .get(`https://carrent-eight.vercel.app/my-booking/email?email=${user.email}`, {
           withCredentials: true
         })
         .then((res) => setBookings(res.data))
@@ -65,7 +65,7 @@ const MyBookings = () => {
 
   const handleStatusCancel = (id) => {
     axios
-      .patch(`http://localhost:5000/cancel/${id}`)
+      .patch(`https://carrent-eight.vercel.app/cancel/${id}`)
       .then((res) => {
         if (res.data.modifiedCount > 0) {
           Swal.fire({
@@ -108,7 +108,7 @@ const MyBookings = () => {
     }
 
     axios
-      .patch(`http://localhost:5000/modify-booking/${selectedBooking._id}`, {
+      .patch(`https://carrent-eight.vercel.app/modify-booking/${selectedBooking._id}`, {
         startDate: newStartDate,
         endDate: newEndDate,
       })
