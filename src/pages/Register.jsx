@@ -8,7 +8,7 @@ import { AuthContext } from "../AuthProvider/AuthProvider";
 import swal from 'sweetalert';
 
 const Register = () => {
-    const {createNewUser}=useContext(AuthContext);
+    const {createNewUser,googleSignIn}=useContext(AuthContext);
     const navigate = useNavigate();
     const handelRegister = e=>{
         e.preventDefault();
@@ -42,6 +42,16 @@ const Register = () => {
         })
 
 
+    }
+    const googleLogin = ()=>{
+      googleSignIn()
+      .then(result=>{
+        // console.log(result.user);
+        navigate('/')
+      })
+      .catch(err=>{
+        console.err(err.message);
+      })
     }
 
   return (
@@ -143,7 +153,10 @@ const Register = () => {
                 <div className="bg-red-500 rounded-full w-8 h-8 flex items-center justify-center">
                   <FaGoogle className="text-white text-lg" />
                 </div>
+                <button onClick={googleLogin}>
                 <p className="ml-2 text-gray-700 font-medium">Google</p>
+                </button>
+                
               </div>
 
               {/* LinkedIn */}

@@ -104,7 +104,7 @@ const CarDetails = () => {
                 <p><span className="font-semibold">BookingCount:</span> {carData.bookingCount || 0}</p>
                 <p className="font-semibold">Features:</p>
                 <ul className="list-disc list-inside pl-4">
-                  {carData.features && carData.features.length > 0 ? (
+                  {carData?.features && carData?.features?.length > 0 ? (
                     carData.features.map((feature, index) => (
                       <li key={index} className="text-gray-400">{feature}</li>
                     ))
@@ -144,10 +144,6 @@ const CarDetails = () => {
 
             <p><span className="font-semibold">Availability:</span> {carData.availability}</p>
             
-           
-            {/* {carData?.bookingStatus === 'pending' ? setAvailability(carData.availability)
-            : carData?.bookingStatus === 'cancelled' ?setAvailability('unavailability') :''
-            } */}
             
             {/* Date Picker for Start and End Date */}
             <div className="space-y-4">

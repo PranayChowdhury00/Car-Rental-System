@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../AuthProvider/AuthProvider";
 
 const AvailableCars = () => {
+  const { user } = useContext(AuthContext);
   const [cars, setCars] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("grid");
@@ -103,12 +106,18 @@ const AvailableCars = () => {
         </div>
       ) : (
         <div
-          className={viewMode === "grid" ? "grid grid-cols-3 gap-6" : "space-y-6"}
+          className={
+            viewMode === "grid" ? "grid grid-cols-3 gap-6" : "space-y-6"
+          }
         >
           {sortedCars.map((car) => (
             <div
               key={car._id}
-              className={viewMode === "grid" ? "card card-compact bg-base-100 shadow-md" : "card card-compact bg-base-100 shadow-md list-view"}
+              className={
+                viewMode === "grid"
+                  ? "card card-compact bg-base-100 shadow-md"
+                  : "card card-compact bg-base-100 shadow-md list-view"
+              }
             >
               <figure>
                 <img
@@ -122,12 +131,22 @@ const AvailableCars = () => {
                 <p>{car.location}</p>
                 <p className="text-lg font-bold">{car.dailyRentalPrice} BDT</p>
                 <div className="card-actions justify-end">
-                  <button
-                    onClick={() => navigate(`/car-details/${car._id}`)}
-                    className="btn btn-primary"
-                  >
-                    Book Now
-                  </button>
+                  {car?.user == user?.email ? (
+                    <button
+                     disabled
+                      onClick={() => navigate(`/car-details/${car._id}`)}
+                      className="btn btn-primary"
+                    >
+                      Book Now
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => navigate(`/car-details/${car._id}`)}
+                      className="btn btn-primary"
+                    >
+                      Book Now
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

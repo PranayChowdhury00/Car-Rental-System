@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import swal from 'sweetalert';
 
 const NavBar = () => {
   const { signOutUser, user } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const links = (
     <>
       <li>
@@ -37,6 +37,7 @@ const NavBar = () => {
           title: "Logout Successful!",
           icon: "success",
         });
+        navigate('/')
       })
       .catch((error) => {
         swal({

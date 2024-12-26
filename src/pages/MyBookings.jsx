@@ -69,6 +69,7 @@ const MyBookings = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         handleStatusCancel(id);
+        // handleStatusCancelForAddCar(id);
       }
     });
   };
@@ -99,6 +100,33 @@ const MyBookings = () => {
         });
       });
   };
+
+  // const handleStatusCancelForAddCar = (id) => {
+  //   axios
+  //     .patch(`http://localhost:5000/cancelAddCar/${id}`)
+  //     .then((res) => {
+  //       if (res.data.modifiedCount > 0) {
+  //         Swal.fire({
+  //           title: "Cancelled Order",
+  //           icon: "success",
+  //         });
+  //         // Update state instead of reloading the page
+  //         setBookings((prev) => prev.filter((booking) => booking._id !== id));
+  //       } else {
+  //         Swal.fire({
+  //           title: "Order not updated",
+  //           icon: "error",
+  //         });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error cancelling booking:", error);
+  //       Swal.fire({
+  //         title: "Failed to cancel order",
+  //         icon: "error",
+  //       });
+  //     });
+  // };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -176,7 +204,7 @@ const MyBookings = () => {
                           onClick={() => handleModifyBooking(booking._id)}
                           className="px-2 py-1 text-sm bg-blue-500 text-white rounded shadow hover:bg-blue-600 flex items-center gap-1"
                         >
-                          <FaCalendarAlt /> Modify
+                          <FaCalendarAlt /> Modify Date
                         </button>
                       </div>
                     </td>
