@@ -21,7 +21,9 @@ const MyCar = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:5000/myCar/${user.email}`
+          `http://localhost:5000/myCar/${user.email}`,{
+            withCredentials:true
+          }
         );
         setCars(response.data);
       } catch (error) {

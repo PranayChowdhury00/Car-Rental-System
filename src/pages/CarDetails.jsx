@@ -1,13 +1,21 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { AuthContext } from "../AuthProvider/AuthProvider";
 
 const CarDetails = () => {
   const { id } = useParams();
-  const [carData, setCarData] = useState({}); // Initialize as an object
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-console.log(carData.features);
+  const [carData, setCarData] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date()); // Added state for end date
+  const {user}=useContext(AuthContext);
+   const [availability,setAvailability]=useState(true);
+  
+  // Fetch car details from the backend
   useEffect(() => {
     axios
       .get(`http://localhost:5000/cars/${id}`)
@@ -15,27 +23,59 @@ console.log(carData.features);
       .catch((error) => console.error("Error fetching car details:", error));
   }, [id]);
 
+  // Handle booking of the car
   const handleBooking = () => {
-    if(carData.bookingCount>0){
+    if (carData.bookingCount > 0  ) {
       Swal.fire({
-        title:'Already Booked',
-        icon:"success",
-      })
-    }
-    else{
-      const data = axios
-      .post(`http://localhost:5000/bookings`, carData)
-      .then((response) => {
-        if (response.data.insertedId) {
-
-          const data=axios.patch(`http://localhost:5000/counting-booking/${id}`);
-          Swal.fire({
-            title: "Car Rent Successfully for A day",
-            icon: "success",
-          });
-          setIsModalOpen(false); // Close modal after successful booking
-        }
+        title: "Already Booked",
+        icon: "warning",
       });
+    } else {
+      const data = {
+        carId: carData._id,
+        carModel: carData.carModel,
+        imageUrl: carData.imageUrl,
+        dailyRentalPrice: carData.dailyRentalPrice,
+        startDate,
+        endDate,
+        userEmail: user?.email, // Add the logged-in user's email here
+        bookingStatus: "confirm", // Default status for new bookings
+      };
+  
+      axios
+        .post('http://localhost:5000/bookings', data)
+        .then((response) => {
+          if (response.data.success) {
+            axios.patch(`http://localhost:5000/counting-booking/${id}`);
+            Swal.fire({
+              title: "Car Rent Successfully ",
+              icon: "success",
+            });
+            setIsModalOpen(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Error booking the car:", error);
+        });
+    }
+  };
+  
+  useEffect(() => {
+    if (carData?.bookingStatus === "pending" || carData?.bookingStatus === "cancelled") {
+      setAvailability(true); // Car can be booked
+      
+    } else {
+      setAvailability(false); // Car already booked
+    }
+  }, [carData]);
+  
+
+  // Handle date changes
+  const handleDateChange = (date, type) => {
+    if (type === "start") {
+      setStartDate(date);
+    } else if (type === "end") {
+      setEndDate(date);
     }
   };
 
@@ -59,23 +99,14 @@ console.log(carData.features);
               <h1 className="text-4xl font-bold mb-2">{carData.carModel || "Car Model"}</h1>
               <p className="text-lg text-gray-400 mb-4">{carData.description || "Description not available."}</p>
               <div className="text-lg space-y-2">
-                <p>
-                  <span className="font-semibold">Daily Rental Price:</span> $ {carData.dailyRentalPrice || "N/A"}
-                </p>
-                <p>
-                  <span className="font-semibold">Availability:</span> {carData.availability || "Unknown"}
-                </p>
-                <p>
-                  <span className="font-semibold">BookingCount :</span> {carData.bookingCount || 0}
-                </p>
+                <p><span className="font-semibold">Daily Rental Price:</span> ${carData.dailyRentalPrice || "N/A"}</p>
+                <p><span className="font-semibold">Availability:</span> {carData.availability || "Unknown"}</p>
+                <p><span className="font-semibold">BookingCount:</span> {carData.bookingCount || 0}</p>
                 <p className="font-semibold">Features:</p>
                 <ul className="list-disc list-inside pl-4">
-                  
                   {carData.features && carData.features.length > 0 ? (
                     carData.features.map((feature, index) => (
-                      <li key={index} className="text-gray-400">
-                        {feature}
-                      </li>
+                      <li key={index} className="text-gray-400">{feature}</li>
                     ))
                   ) : (
                     <li className="text-gray-400">No features listed.</li>
@@ -86,13 +117,19 @@ console.log(carData.features);
 
             {/* Booking Button */}
             <div className="mt-6">
-              <button
-                onClick={() => setIsModalOpen(true)} // Open modal on click
-                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-blue-500 text-white rounded-lg font-semibold text-lg transition-all duration-300"
+            <button
+                onClick={() => setIsModalOpen(true)}
+                className={`w-full py-3 ${
+                  availability
+                    ? "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-blue-500"
+                    : "bg-gray-500 cursor-not-allowed"
+                } text-white rounded-lg font-semibold text-lg transition-all duration-300`}
+                disabled={!availability}
               >
-                Book Now
+                {availability ? "Book Now" : "Already Booked"}
               </button>
             </div>
+            
           </div>
         </div>
       </div>
@@ -102,15 +139,41 @@ console.log(carData.features);
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-gray-900 rounded-lg shadow-lg p-6 w-96">
             <h2 className="text-2xl font-bold mb-4">Booking Confirmation</h2>
-            <p>
-              <span className="font-semibold">Car Model:</span> {carData.carModel}
-            </p>
-            <p>
-              <span className="font-semibold">Daily Rental Price:</span> ${carData.dailyRentalPrice}
-            </p>
-            <p>
-              <span className="font-semibold">Availability:</span> {carData.availability}
-            </p>
+            <p><span className="font-semibold">Car Model:</span> {carData.carModel}</p>
+            <p><span className="font-semibold">Daily Rental Price:</span> ${carData.dailyRentalPrice}</p>
+
+            <p><span className="font-semibold">Availability:</span> {carData.availability}</p>
+            
+           
+            {/* {carData?.bookingStatus === 'pending' ? setAvailability(carData.availability)
+            : carData?.bookingStatus === 'cancelled' ?setAvailability('unavailability') :''
+            } */}
+            
+            {/* Date Picker for Start and End Date */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold">Start Date</label>
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => handleDateChange(date, "start")}
+                  showTimeSelect
+                  dateFormat="Pp"
+                  className="w-full mt-2 p-2 bg-gray-700 text-white rounded-lg"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold">End Date</label>
+                <DatePicker
+                  selected={endDate}
+                  onChange={(date) => handleDateChange(date, "end")}
+                  showTimeSelect
+                  dateFormat="Pp"
+                  className="w-full mt-2 p-2 bg-gray-700 text-white rounded-lg"
+                />
+              </div>
+            </div>
+
             <div className="mt-6 flex justify-between">
               <button
                 onClick={() => setIsModalOpen(false)} // Close modal
