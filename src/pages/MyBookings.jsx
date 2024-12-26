@@ -2,16 +2,23 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { FaCalendarAlt, FaCheck, FaTrash } from "react-icons/fa";
+import { FaCalendarAlt, FaTrash } from "react-icons/fa";
 import { format } from "date-fns"; // Import for date formatting
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import DatePicker from "react-datepicker"; 
+import "react-datepicker/dist/react-datepicker.css";
+
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
   const { user, loading } = useContext(AuthContext);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [newStartDate, setNewStartDate] = useState(null);
+  const [newEndDate, setNewEndDate] = useState(null);
 
   if (loading) {
     return <span className="loading loading-spinner loading-lg"></span>;
@@ -127,6 +134,59 @@ const MyBookings = () => {
   //       });
   //     });
   // };
+  
+  const handleModifyBooking = (id) => {
+    const booking = bookings.find((b) => b._id === id);
+    setSelectedBooking(booking);
+    setNewStartDate(new Date(booking.startDate));
+    setNewEndDate(new Date(booking.endDate));
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmModification = () => {
+    if (!newStartDate || !newEndDate || newStartDate >= newEndDate) {
+      Swal.fire({
+        title: "Invalid Dates",
+        text: "Please ensure the start date is before the end date.",
+        icon: "error",
+      });
+      return;
+    }
+
+    axios
+      .patch(`http://localhost:5000/modify-booking/${selectedBooking._id}`, {
+        startDate: newStartDate,
+        endDate: newEndDate,
+      })
+      .then((res) => {
+        if (res.data.modifiedCount > 0) {
+          Swal.fire({
+            title: "Booking Updated",
+            icon: "success",
+          });
+
+          setBookings((prev) =>
+            prev.map((b) =>
+              b._id === selectedBooking._id
+                ? { ...b, startDate: newStartDate, endDate: newEndDate }
+                : b
+            )
+          );
+
+          setIsModalOpen(false);
+          setSelectedBooking(null);
+        }
+      })
+      .catch((error) => {
+        console.error("Error updating booking:", error);
+        Swal.fire({
+          title: "Failed to Update",
+          text: "Please try again later.",
+          icon: "error",
+        });
+      });
+  };
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -214,6 +274,47 @@ const MyBookings = () => {
             </table>
           </div>
         </>
+      )}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
+            <h3 className="text-lg font-bold mb-4">Modify Booking Dates</h3>
+            <div className="mb-4">
+              <label className="block mb-2">Start Date:</label>
+              <DatePicker
+                selected={newStartDate}
+                onChange={(date) => setNewStartDate(date)}
+                dateFormat="dd-MM-yyyy HH:mm"
+                showTimeSelect
+                className="border px-2 py-1 w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-2">End Date:</label>
+              <DatePicker
+                selected={newEndDate}
+                onChange={(date) => setNewEndDate(date)}
+                dateFormat="dd-MM-yyyy HH:mm"
+                showTimeSelect
+                className="border px-2 py-1 w-full"
+              />
+            </div>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={handleConfirmModification}
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
