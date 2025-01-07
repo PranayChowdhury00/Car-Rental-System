@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import swal from 'sweetalert';
+import ThemeProvider from "./ThemeProvider";
+
 
 const NavBar = () => {
   const { signOutUser, user } = useContext(AuthContext);
@@ -49,7 +51,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar sticky top-0 z-20 bg-base-200 shadow-xl">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -81,6 +83,7 @@ const NavBar = () => {
         <ul className="menu menu-horizontal px-1">{links}</ul>
       </div>
       <div className="navbar-end">
+        <ThemeProvider></ThemeProvider>
         {user ? (
           <button onClick={signOut} className="btn btn-ghost">
             Log-out

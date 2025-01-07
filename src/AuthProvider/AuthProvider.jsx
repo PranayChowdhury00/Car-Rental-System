@@ -4,7 +4,7 @@ import auth from '../FireBase/firebase';
 import axios from 'axios';
 export const AuthContext = createContext(null);
 const GoogleProvider = new GoogleAuthProvider();
-const AuthProvider = ({children}) => {
+const AuthProvider = ({children,theme}) => {
     const [user,setUser]=useState(null);
     const [loader,setLoader]=useState(true);
 
@@ -60,6 +60,7 @@ const AuthProvider = ({children}) => {
     const authInfo = {
         user,
         loader,
+        theme,
         createNewUser,
         signInUser,
         googleSignIn,

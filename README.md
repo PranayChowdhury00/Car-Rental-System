@@ -35,3 +35,4 @@ A web-based application to manage car rentals, allowing users to book and cancel
 - **axios**: For making HTTP requests to the server.
 - **sweetalert2**: For displaying beautiful alerts and popups.
 - **react-dropzone**: For image upload handling.
+# b10a11
