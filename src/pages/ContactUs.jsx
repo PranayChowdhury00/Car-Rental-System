@@ -8,7 +8,7 @@ const ContactUs = () => {
           Contact Us
         </h2>
         
-        {/* Contact Form */}
+       
         <div className="lg:grid lg:grid-cols-2 gap-12">
           <div>
             <h3 className="text-2xl font-semibold text-gray-900 mb-4">
