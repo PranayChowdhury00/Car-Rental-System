@@ -1,71 +1,75 @@
 import Lottie from "lottie-react";
-import registerImg from "../../public/login.json"; 
+import registerImg from "../../public/login.json";
 import { FaGoogle, FaLinkedin } from "react-icons/fa";
 import { RiFacebookCircleFill } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../AuthProvider/AuthProvider";
-import swal from 'sweetalert';
+import swal from "sweetalert";
 
 const Register = () => {
-    const {createNewUser,googleSignIn}=useContext(AuthContext);
-    const navigate = useNavigate();
-    const handelRegister = e=>{
-        e.preventDefault();
-        const name = e.target.name.value;
-        const email = e.target.email.value;
-        const password = e.target.password.value;
-        const url = e.target.url.value;
-        // console.log(name,email,password,url);
-        createNewUser(email,password)
-        .then(res=>{
-            // console.log(res.user)
-           if(res.user){
-            swal({
-                title: "Registration Successful!",
-                icon: "success",
-                
-              })
-              e.target.reset();
-              navigate('/');
-           }
-        })
-        .catch(error=>{
-            console.err(error.message);
-            swal({
-                title: "Registration Failed",
-                text: error.message,
-                icon: "error",
-                
-            });
-            e.target.reset();
-        })
-
-
-    }
-    const googleLogin = ()=>{
-      googleSignIn()
-      .then(result=>{
+  const { createNewUser, googleSignIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handelRegister = (e) => {
+    e.preventDefault();
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    const url = e.target.url.value;
+    // console.log(name,email,password,url);
+    createNewUser(email, password)
+      .then((res) => {
+        // console.log(res.user)
+        if (res.user) {
+          swal({
+            title: "Registration Successful!",
+            icon: "success",
+            timer: 2000,
+            buttons: false,
+          });
+          e.target.reset();
+          navigate("/");
+        }
+      })
+      .catch((error) => {
+        console.err(error.message);
+        swal({
+          title: "Registration Failed",
+          text: error.message,
+          icon: "error",
+        });
+        e.target.reset();
+      });
+  };
+  const googleLogin = () => {
+    googleSignIn()
+      .then((result) => {
         // console.log(result.user);
-        navigate('/')
+        navigate("/");
       })
-      .catch(err=>{
+      .catch((err) => {
         console.err(err.message);
-      })
-    }
+      });
+  };
 
   return (
-    <div className="hero min-h-screen bg-gradient-to-r from-green-400 via-blue-500 to-purple-500">
+    <div className="hero min-h-screen  mt-3 mb-3">
       <div className="hero-content flex-col lg:flex-row-reverse gap-10">
         {/* Lottie Animation */}
         <div className="flex-shrink-0">
-          <Lottie animationData={registerImg} loop={true} className="w-full max-w-md" />
+          <Lottie
+            animationData={registerImg}
+            loop={true}
+            className="w-full max-w-md"
+          />
         </div>
 
         {/* Register Form */}
         <div className="card bg-white w-full max-w-md shadow-2xl rounded-lg">
           <form onSubmit={handelRegister} className="card-body p-8">
-            <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">Register Now!</h1>
+            <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
+              Register Now!
+            </h1>
 
             {/* Name */}
             <div className="form-control">
@@ -73,7 +77,7 @@ const Register = () => {
                 <span className="label-text text-gray-700">Name</span>
               </label>
               <input
-              name="name"
+                name="name"
                 type="text"
                 placeholder="Enter your name"
                 className="input input-bordered border-gray-300"
@@ -87,7 +91,7 @@ const Register = () => {
                 <span className="label-text text-gray-700">Email</span>
               </label>
               <input
-              name="email"
+                name="email"
                 type="email"
                 placeholder="Enter your email"
                 className="input input-bordered border-gray-300"
@@ -101,7 +105,7 @@ const Register = () => {
                 <span className="label-text text-gray-700">Password</span>
               </label>
               <input
-              name="password"
+                name="password"
                 type="password"
                 placeholder="Enter your password"
                 className="input input-bordered border-gray-300"
@@ -115,7 +119,7 @@ const Register = () => {
                 <span className="label-text text-gray-700">Photo URL</span>
               </label>
               <input
-              name="url"
+                name="url"
                 type="url"
                 placeholder="Enter your photo URL"
                 className="input input-bordered border-gray-300"
@@ -132,7 +136,9 @@ const Register = () => {
 
           {/* Social Login */}
           <div className="text-center mb-6 px-6">
-            <p className="text-xl font-medium text-gray-700">Or register with</p>
+            <p className="text-xl font-medium text-gray-700">
+              Or register with
+            </p>
             <div className="flex gap-5 justify-center mt-4">
               {/* Facebook */}
               <div
@@ -154,9 +160,8 @@ const Register = () => {
                   <FaGoogle className="text-white text-lg" />
                 </div>
                 <button onClick={googleLogin}>
-                <p className="ml-2 text-gray-700 font-medium">Google</p>
+                  <p className="ml-2 text-gray-700 font-medium">Google</p>
                 </button>
-                
               </div>
 
               {/* LinkedIn */}
@@ -171,7 +176,10 @@ const Register = () => {
               </div>
             </div>
 
-            <Link to='/login' className="mt-5 text-indigo-600 font-bold hover:underline cursor-pointer">
+            <Link
+              to="/login"
+              className="mt-5 text-indigo-600 font-bold hover:underline cursor-pointer"
+            >
               Already have an account? Login
             </Link>
           </div>

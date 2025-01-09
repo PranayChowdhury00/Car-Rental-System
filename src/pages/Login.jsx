@@ -5,7 +5,7 @@ import { RiFacebookCircleFill } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../AuthProvider/AuthProvider";
-import swal from 'sweetalert';
+import swal from "sweetalert";
 const Login = () => {
   const { signInUser, googleSignIn } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -17,33 +17,33 @@ const Login = () => {
     signInUser(email, password)
       .then((result) => {
         // console.log(result.user);
-        if(result.user){
-            swal({
-                title: "Registration Successful!",
-                icon: "success",
-                
-              })
-              e.target.reset();
-              navigate('/')
-            }
+        if (result.user) {
+          swal({
+            title: "Registration Successful!",
+            icon: "success",
+            timer: 2000,
+            buttons: false,
+          });
+          e.target.reset();
+          navigate("/");
+        }
       })
-      .catch(error=>{
+      .catch((error) => {
         console.err(error.message);
         swal({
-            title: "Registration Failed",
-            text: error.message,
-            icon: "error",
-            
+          title: "Registration Failed",
+          text: error.message,
+          icon: "error",
         });
         e.target.reset();
-    })
+      });
   };
   const googleLogin = () => {
     // console.log('click');
     googleSignIn()
       .then((result) => {
         // console.log(result.user);
-        navigate('/')
+        navigate("/");
       })
       .catch((err) => {
         console.err(err.message);
@@ -51,7 +51,7 @@ const Login = () => {
   };
 
   return (
-    <div className="hero min-h-screen bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500">
+    <div className="hero min-h-screen ">
       <div className="hero-content flex-col lg:flex-row-reverse gap-10">
         {/* Lottie Animation */}
         <div className="flex-shrink-0">
