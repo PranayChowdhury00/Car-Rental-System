@@ -8,7 +8,7 @@ A web-based application to manage car rentals, allowing users to book and cancel
 
 ## 📸 Gallery
 Take a sneak peek into the user interface of Chill Gamer:
- ![Image Alt](https://github.com/PranayChowdhury00/Car-Rental-System/blob/main/assignment-11-a1abc.web.app_.png?raw=true)
+ ![Image Alt](https://raw.githubusercontent.com/PranayChowdhury00/Car-Rental-System/refs/heads/main/localhost_5174_%20(3).png?raw=true)
  ![Image Alt](https://github.com/PranayChowdhury00/Car-Rental-System/blob/main/assignment-11-a1abc.web.app_%20(2).png?raw=true)
  ![Image Alt](https://github.com/PranayChowdhury00/Car-Rental-System/blob/main/assignment-11-a1abc.web.app_%20(1).png?raw=true)
 ## Key Features
